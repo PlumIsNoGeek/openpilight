@@ -9,6 +9,6 @@ with using other gateways). I personally like to buy more bulbs and more bulbs o
 project's intent is to totally work without having a remote/WifiGateway.
 
 It is based on the great work of:
-* openmlight of henryk - https://hackaday.io/project/5888-reverse-engineering-the-milight-on-air-protocol
+* openmilight of henryk - https://hackaday.io/project/5888-reverse-engineering-the-milight-on-air-protocol
 * Torsten Tränkner - http://torsten-traenkner.de/wissen/smarthome/openmilight.php
 * bakkerr - https://github.com/bakkerr/openmilight_pi
