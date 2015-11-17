@@ -19,8 +19,6 @@ ${OBJDIR}PL1167_nRF24.o:src/PL1167_nRF24.cpp
 ${OBJDIR}openpilight.o:src/openpilight.cpp
 	g++ -Wall ${CCFLAGS} -c $^ -o $@
 
-#g++  -I/usr/local/include -L/usr/local/lib -lrf24-sunxi PL1167_nRF24.cpp MiLightRadio.cpp openpilight.cpp -o openmilight
-
 clean:
 	rm -rf ${OBJDIR}*.o ${EXECUTABLE}
 	

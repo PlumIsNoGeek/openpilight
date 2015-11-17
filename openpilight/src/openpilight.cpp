@@ -60,7 +60,7 @@ void exitHelp() {
 	printf("\n");
 	printf("openpilight Communication Gateway usage instructions\n");
 	printf("================================================\n");
-	printf("Start Server: sbirnla [options]\n");
+	printf("Start Server: openpilight [options]\n");
 	printf("\n");
 	printf("radio options:\n");
 	printf("     -a hwAddress      hardware address to be sent within 2,4GHz commands which identifies the\n");
