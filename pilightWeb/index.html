@@ -1,0 +1,144 @@
+<!--
+ Copyright (c) 2015 Florian Geyer
+ https://github.com/PlumIsNoGeek/openpilight
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+ <title>Openpilight Web Interface</title>
+ <script type="text/javascript" src="js/jquery.js"></script>
+ <script type="text/javascript" src="js/pilight.js"></script>
+ <script type="text/javascript" src="colorpicker/farbtastic.js"></script>
+ <link rel="stylesheet" href="colorpicker/farbtastic.css" type="text/css" />
+ <link rel="stylesheet" href="css/colorbuttons.css" type="text/css" />
+ <link rel="stylesheet" href="css/styles.css" type="text/css" />
+ 
+ <script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    $('#error').hide();
+    $('#advanced').hide();
+    $('#hideAdvanced').hide();
+    $('#picker').farbtastic(callback);
+  });
+  
+  function showError(err, data) {
+  	$('#error').html(err + ": " + JSON.stringify(data));
+  	$('#error').fadeIn();
+	if (hideErrorTimeout != 0) {
+  		window.clearTimeout(hideErrorTimeout);
+  		hideErrorTimeout = 0;
+	}
+  }
+  
+  function hideError() {
+  	$('#error').fadeOut();
+  }
+  
+  var lastHue = -1;
+  var lastLum = -1;
+  function callback(obj, hue, lum) {
+  	if (lastHue != hue) {
+  		debounceAjax({ hue: Math.round(hue*360) }, EVENT_HUE);
+  		lastHue = hue;
+  	}
+  	if (lastLum != lum) {
+  		debounceAjax({ brightness: Math.round(2*lum*100) }, EVENT_LUM);
+  		lastLum = lum;
+  	}
+  	//debounceAjax({ color: pickedColor });
+  }
+ </script>
+</head>
+<body>
+
+<div id="error" style="color: red; font-size: 1.4em">jQuery.js is not present. You must install jQuery in this folder for the demo to work.</div>
+
+<div align="center">
+<div style="width:500px">
+<h1>Openpilight Web Interface</h1>
+
+<div id="picker"></div>
+
+<br/>
+<input type="button" class="btn green small" value="All On" onClick="debounceAjax({on: 0})" />
+<input type="button" class="btn green small" value="On 1" onClick="debounceAjax({on: 1})" />
+<input type="button" class="btn green small" value="On 2" onClick="debounceAjax({on: 2})" />
+<input type="button" class="btn green small" value="On 3" onClick="debounceAjax({on: 3})" />
+<input type="button" class="btn green small" value="On 4" onClick="debounceAjax({on: 4})"><br/>
+<input type="button" class="btn red small" value="All Off" onClick="debounceAjax({off: 0})">
+<input type="button" class="btn red small" value="Off 1" onClick="debounceAjax({off: 1})">
+<input type="button" class="btn red small" value="Off 2" onClick="debounceAjax({off: 2})">
+<input type="button" class="btn red small" value="Off 3" onClick="debounceAjax({off: 3})">
+<input type="button" class="btn red small" value="Off 4" onClick="debounceAjax({off: 4})"><br/><br/>
+<input type="button" class="btn yellow small" value="All White" onClick="debounceAjax({white: 0})">
+<input type="button" class="btn yellow small" value="White 1" onClick="debounceAjax({white: 1})">
+<input type="button" class="btn yellow small" value="White 2" onClick="debounceAjax({white: 2})">
+<input type="button" class="btn yellow small" value="White 3" onClick="debounceAjax({white: 3})">
+<input type="button" class="btn yellow small" value="White 4" onClick="debounceAjax({white: 4})"><br/>
+<input type="button" class="btn blue small" value="All Night" onClick="debounceAjax({night: 0})">
+<input type="button" class="btn blue small" value="Night 1" onClick="debounceAjax({night: 1})">
+<input type="button" class="btn blue small" value="Night 2" onClick="debounceAjax({night: 2})">
+<input type="button" class="btn blue small" value="Night 3" onClick="debounceAjax({night: 3})">
+<input type="button" class="btn blue small" value="Night 4" onClick="debounceAjax({night: 4})"><br/><br/>
+
+<hr/>
+<input type="button" style="width:200px" class="btn orange small" value="Show Advanced Controls" id="showAdvanced" onClick="$('#showAdvanced').hide(); $('#hideAdvanced').show(); $('#advanced').fadeIn()">
+<input type="button" style="width:200px" class="btn orange small" value="Hide Advanced Controls" id="hideAdvanced" onClick="$('#hideAdvanced').hide(); $('#showAdvanced').show(); $('#advanced').fadeOut()">
+<br/><br/>
+<span id="advanced">
+Association Address: <input type="text" id="assocAddrH" value="ca" style="width:20px">
+<input type="text" id="assocAddrL" value="fe" style="width:20px"><br/>
+<input type="button" class="btn orange small" value="Assoc" onClick="debounceAjax({assoc: 1, assocAddrH: $('#assocAddrH').val(), assocAddrL: $('#assocAddrL').val(), assocGroup: 0})">
+<input type="button" class="btn orange small" value="Assoc 1" onClick="debounceAjax({assoc: 1, assocAddrH: $('#assocAddrH').val(), assocAddrL: $('#assocAddrL').val(), assocGroup: 1})">
+<input type="button" class="btn orange small" value="Assoc 2" onClick="debounceAjax({assoc: 1, assocAddrH: $('#assocAddrH').val(), assocAddrL: $('#assocAddrL').val(), assocGroup: 2})">
+<input type="button" class="btn orange small" value="Assoc 3" onClick="debounceAjax({assoc: 1, assocAddrH: $('#assocAddrH').val(), assocAddrL: $('#assocAddrL').val(), assocGroup: 3})">
+<input type="button" class="btn orange small" value="Assoc 4" onClick="debounceAjax({assoc: 1, assocAddrH: $('#assocAddrH').val(), assocAddrL: $('#assocAddrL').val(), assocGroup: 4})">
+
+<br/>
+<!--<input type="text" id="genAddr" value="ca fe" style="width:50px">
+<input type="text" id="genDelay" value="250" style="width:50px">
+<input type="text" id="genRepeat" value="9" style="width:50px">
+<input type="text" id="genRDelay" value="0" style="width:50px">
+<input type="radio" name="genGroup" value="0" checked> All
+<input type="radio" name="genGroup" value="1"> Group 1
+<input type="radio" name="genGroup" value="2"> Group 2
+<input type="radio" name="genGroup" value="3"> Group 3
+<input type="radio" name="genGroup" value="4"> Group 4
+<input type="button" class="btn orange small" value="Associate" onClick="generateRaw('Associate')">
+<input type="button" class="btn orange small" value="Unassociate" onClick="generateRaw('Unassociate')">
+<br/>
+<i>Associate should be the same than unassociate - to be checked.</i>
+<br/>
+<i>B8 ca fe 00 b9 03 27 r=9 d=250 rd=0<br/>
+B8 ca fe 00 b9 03 28 r=9 d=250 rd=0<br/>
+B8 ca fe 00 b9 03 29 r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 2A r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 2B r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 2C r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 2D r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 2E r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 2F r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 30 r=9 d=250 rd=0<br/>
+B0 ca fe 00 b9 13 31 r=9 d=250 rd=0<br/>
+</i>-->
+<br/><br/>
+Send Raw Data:
+<textarea id="rawtext" style="width:90%;height:100px"></textarea><br/>
+<input type="button" class="btn orange small" value="Send Raw" onClick="debounceAjax({raw: $('#rawtext').val()})">
+<div align="left"><i>
+<b>Example:</b><br/>
+b8 ca fe 00 b9 03 28 r=9 d=250 rd=25<br/>
+r=9 - 9 repetitions (10 messages total), default: 0<br/>
+d=250 - wait 250ms after message, default: 0<br/>
+rd=25 - wait 25ms between repetitions, default: 0<br/>
+</i></div>
+</span><!--advanced span-->
+
+<hr/>
+Copyright &copy; 2015 Florian Geyer
+</div>
+</div>
+
+</body>
+</html>
