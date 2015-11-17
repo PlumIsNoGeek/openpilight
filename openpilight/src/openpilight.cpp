@@ -108,6 +108,7 @@ void sendRadio(string prefixStr, bool silent, bool verbose, uint8_t* outPacket, 
 void sendAssociationSequence(bool silent, bool verbose, uint8_t addr1, uint8_t addr2, uint8_t group) {
   uint8_t data[7] = {0xB0, addr1, addr2, 0x00, 0x00, 0x00, 0x01};
   if (group > 4) { group = 0; }
+  data[0] = 0xb8;
   data[4] = 0xb8 | group; //brightness also contains group id
   data[5] = group*2+1; //button code, group all: 0x01, group 1: 0x03, group2: 0x05....
   for (int i = 0; i < 3; i++) { //3 times switch on command
@@ -115,6 +116,7 @@ void sendAssociationSequence(bool silent, bool verbose, uint8_t addr1, uint8_t a
   	usleep(250000);
   	data[6]++;
   }
+  data[0] = 0xb0;
   data[5]|= 0x10; //add long press flag
   for (int i = 0; i < 8; i++) { //8 times switch on long press command
   	sendRadio("ASSOC", silent, verbose, data, 7, 10, 0);
