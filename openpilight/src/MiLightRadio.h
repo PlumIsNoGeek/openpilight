@@ -1,8 +1,10 @@
 /*
- * MiLightRadio.h
+ * MiLightRadio.cpp
  *
- *  Created on: 29 May 2015
- *      Author: henryk
+ *  Created on: 10 Nov 2015
+ *      Author: Florian Geyer
+ *
+ * thanks to henryk for his great work
  */
 
 #ifdef ARDUINO

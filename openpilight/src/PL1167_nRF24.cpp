@@ -3,6 +3,9 @@
  *
  *  Created on: 29 May 2015
  *      Author: henryk
+ *
+ * slight changes by Florian Geyer to not completely have to resend all
+ * parameters to the NRF24 module each message sent
  */
 
 #include "PL1167_nRF24.h"

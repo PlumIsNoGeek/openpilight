@@ -1,12 +1,10 @@
-/**
- * On a Raspberry Pi 2 compile with:
+/*
+ * openpilight.cpp
  *
- * g++ -Ofast -mfpu=vfp -mfloat-abi=hard -march=armv7-a -mtune=arm1176jzf-s -I/usr/local/include -L/usr/local/lib -lrf24-bcm PL1167_nRF24.cpp MiLightRadio.cpp openmili.cpp -o openmilight
+ *  Created on: 10 Nov 2015
+ *      Author: Florian Geyer
  *
- * for receiver mode run with:
- * sudo ./openmilight
- *
- * for sender mode run with:
+ * thanks to henryk for his great work
  */
 
 #include <cstdlib>
