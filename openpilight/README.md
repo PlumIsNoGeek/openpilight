@@ -30,13 +30,14 @@ radio options:
                        channes (default: 0)
      -r                number of resends of radio packets - except color and brightness (default: 10)
      -d                delay between resends of packages in microseconds (default: 0)
+     -u                send key up events after key events (default: disabled)
      -l                activates radio listen mode (server disabled - just listening for radio packages)
 UDP server options:
      -i ipAddress      interface ip address to bind the UDP socket to (default: 0.0.0.0)
      -p port           port to listen for UDP packets (default: 8899)
      -x addressString  support automatic discovery by other apps - addressString will containt the response
-                       string which is sent for identification typically is the IP address or hostname of the
-                       server (default: disabled)
+                       string which is sent for identification typically is the IP address (hostname not supported)
+                       of the server (default: disabled)
 misc options:
      -v                enables verbose output (default: disabled)
      -t                profile timing (default: disabled)

@@ -68,13 +68,14 @@ void exitHelp() {
 	printf("                       channes (default: 0)\n");
 	printf("     -r                number of resends of radio packets - except color and brightness (default: 10)\n");
 	printf("     -d                delay between resends of packages in microseconds (default: 0)\n");
+	printf("     -u                send key up events after key events (default: disabled)\n");
 	printf("     -l                activates radio listen mode (server disabled - just listening for radio packages)\n");
 	printf("UDP server options:\n");
 	printf("     -i ipAddress      interface ip address to bind the UDP socket to (default: 0.0.0.0)\n");
 	printf("     -p port           port to listen for UDP packets (default: 8899)\n");
 	printf("     -x addressString  support automatic discovery by other apps - addressString will containt the response\n");
-	printf("                       string which is sent for identification typically is the IP address or hostname of the\n");
-	printf("                       server (default: disabled)\n");
+	printf("                       string which is sent for identification typically is the IP address (hostname not supported)\n");
+	printf("                       of the server (default: disabled)\n");
 	printf("misc options:\n");
 	printf("     -v                enables verbose output (default: disabled)\n");
 	printf("     -t                profile timing (default: disabled)\n");
@@ -139,6 +140,7 @@ int main(int argc, char** argv)
 	bool verbose = false;
 	bool silent = false;
 	bool listenOnly = false;
+	bool sendkeyup = false;
 	
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = myQuitHandler;
@@ -147,7 +149,7 @@ int main(int argc, char** argv)
 	sigaction(SIGINT, &sigIntHandler, NULL);
 	sigaction(SIGTERM, &sigIntHandler, NULL);
 
-	while ((c = getopt (argc, argv, "a:i:p:c:r:d:x:ltvsh")) != -1) {
+	while ((c = getopt (argc, argv, "a:i:p:c:r:d:x:ltvsuh")) != -1) {
 		switch (c) {
 			case 'l':
 				listenOnly = true;
@@ -168,6 +170,9 @@ int main(int argc, char** argv)
 				break;
 			case 'r':
 				resends = strtol(optarg,&pEnd,10);
+				break;
+			case 'u':
+				sendkeyup = true;
 				break;
 			case 'd':
 				resendMicroDelay = strtol(optarg,&pEnd,10);
@@ -302,10 +307,10 @@ int main(int argc, char** argv)
 	  			}
 	  		} else if ((udpMsgBuf[0] >= 0xC5) && (udpMsgBuf[0]<=0xCC)) {
 	  			button = (udpMsgBuf[0]-0xC5) + 3; //button index for group buttons starts at 3
-	  			button|= 0x10; //long press for white/night mode
 	  			if (button % 2 == 1) {
 	  			    currentGroupControl = ((button-3)/2) + 1; //on command changes active group
 	  			}
+	  			button|= 0x10; //long press for white/night mode
 	  			discoSequence = 255; //reset disco mode
 	  		} else {
 		  		switch (udpMsgBuf[0]) {
@@ -364,7 +369,7 @@ int main(int argc, char** argv)
 		  			case 0x4E:
 		  				//brightness
 		  				button = 0x0e;
-		  				brightness = ((0x90 - (udpMsgBuf[1] * 8) + 0x100) & 0xFF);
+		  				brightness = (uint8_t)((0x90 - ((int32_t)udpMsgBuf[1] * 8) + 0x100) & 0xFF);
 		  				brightnessSent++;
 		  				doResends = 0;
 		  				//valid from 0x80 to 0 till 0xb8
@@ -387,9 +392,9 @@ int main(int argc, char** argv)
 	  			outPacket[5] = button;
 	  			outPacket[6] = seqn;
 	  			sendRadio("OUT", silent, verbose, outPacket, sizeof(outPacket), doResends, resendMicroDelay);
-	  			if (doResends >= 0) {
-	  				//outPacket[5] = 0; //don not resend package below (no hammering detected - so resending has been done already here)
-	  			}
+	  			/*if (doResends >= 0) {
+	  				outPacket[5] = 0; //don not resend package below (no hammering detected - so resending has been done already here)
+	  			}*/
 		  	}
   		}
   	} else {
@@ -412,15 +417,22 @@ int main(int argc, char** argv)
   			sendRadio("OUTEND", silent, verbose, outPacket, sizeof(outPacket), doResends, resendMicroDelay);
   		}
   		
-  		if (outPacket[5] != 0) {
-  			outPacket[5] = 0;
-  			sendRadio("OUTEND", silent, verbose, outPacket, sizeof(outPacket), doResends, resendMicroDelay);
+  		if (sendkeyup) {
+	  		if (outPacket[5] != 0) {
+	  			outPacket[5] = 0;
+	  			usleep(20000);
+	  			sendRadio("OUTEND", silent, verbose, outPacket, sizeof(outPacket), doResends, resendMicroDelay);
+	  		}
   		}
   		
   		//only do discovery if I have nothing else to do
   		if (discoverUdp != NULL) {
 	  		size = discoverUdp->timed_recv(udpMsgBuf, UDP_MSG_BUF_SIZE, 1);
 	  		if (size > 0) {
+	  			udpMsgBuf[size] = 0;
+	  			if (verbose) {
+	  				printf("Received Discovery Request \"%s\"\n", udpMsgBuf);
+	  			}
 	  			if(!strncmp(udpMsgBuf, "Link_Wi-Fi", 10)) {
 	  				discoverUdp->respond(discoveryResponse.c_str(), discoveryResponse.length());
 	  			}
