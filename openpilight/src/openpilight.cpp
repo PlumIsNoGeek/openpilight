@@ -12,6 +12,7 @@
 #include <string.h>
 #include "timing.h"
 #include <signal.h>
+#include <unistd.h>
 
 using namespace std;
 

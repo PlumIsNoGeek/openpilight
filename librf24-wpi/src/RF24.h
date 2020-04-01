@@ -19,9 +19,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <sys/time.h>
-#include "spi.h"
 
 #ifdef GPIO_SUN7I
 	#include "gpio_sun7i.h"
@@ -34,6 +33,7 @@
 	#include <wiringPi.h>
 #endif
 
+class SPI;
 
 void __msleep(int milisec);
 void __usleep(int milisec);
@@ -71,7 +71,7 @@ private:
   uint16_t ce_pin; /**< "Chip Enable" pin, activates the RX or TX role */
   uint16_t csn_pin; /**< SPI Chip select */
   bool wide_band; /* 2Mbs data rate in use? */
-  string _spidev;
+  std::string _spidev;
   bool p_variant; /* False for RF24L01 and true for RF24L01P */
   uint8_t payload_size; /**< Fixed size of payloads */
   bool ack_payload_available; /**< Whether there is an ack payload waiting */
@@ -271,7 +271,7 @@ public:
    * @param _cepin The pin attached to Chip Enable on the RF module
    * @param _cspin The pin attached to Chip Select
    */
-  RF24(uint16_t _cepin, uint16_t _cspin, string spidev);
+  RF24(uint16_t _cepin, uint16_t _cspin, std::string spidev);
 
   /**
    * Begin operation of the chip

@@ -9,6 +9,7 @@
  */
 
 #include "PL1167_nRF24.h"
+#include <string.h>
 
 static uint16_t calc_crc(uint8_t *data, size_t data_length);
 static uint8_t reverse_bits(uint8_t data);
