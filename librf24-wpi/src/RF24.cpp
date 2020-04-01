@@ -12,7 +12,7 @@
 #include "RF24.h"
 #include <unistd.h>
 
-static struct timeval start, end;
+static struct timeval start, endtime;
 static long mtime, seconds, useconds;
 
 #ifdef GPIO_WPI
@@ -30,9 +30,9 @@ void __start_timer()
 
 long __millis()
 {
-  gettimeofday(&end, NULL);
-  seconds  = end.tv_sec  - start.tv_sec;
-  useconds = end.tv_usec - start.tv_usec;
+  gettimeofday(&endtime, NULL);
+  seconds  = endtime.tv_sec  - start.tv_sec;
+  useconds = endtime.tv_usec - start.tv_usec;
 
   mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
   return mtime;
