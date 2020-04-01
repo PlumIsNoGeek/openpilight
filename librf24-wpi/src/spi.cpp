@@ -9,6 +9,7 @@
  */
 
 #include "spi.h"
+#include <string.h>
 
 SPI::SPI(string spidev, int speed, int bits)
 {
@@ -81,6 +82,7 @@ uint8_t SPI::transfer(uint8_t tx_)
 
 	uint8_t rx[ARRAY_SIZE(tx)] = {0};
 	struct spi_ioc_transfer tr;
+	memset(&tr, 0, sizeof(tr));
 	tr.tx_buf = (unsigned long)tx;
 	tr.rx_buf = (unsigned long)rx;
 	tr.len = ARRAY_SIZE(tx);
